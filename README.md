@@ -5,7 +5,7 @@
 
 ![img](https://github.com/jobhope/TechnicalNote/assets/28692938/baf44974-fcad-4449-9be5-688a829ab95b)
 
-참고1: https://lizarmong-water.tistory.com/19
+참고1: https://lizarmong-water.tistory.com/21
 
 
 ## 2. CDS View Syntax
