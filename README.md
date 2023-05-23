@@ -1,13 +1,30 @@
 # SAP ABAP CDS(Core Data Service)
 
 ## 1. Code Push Down 개념
-기존 Data to Code 방식에서 Code to Data 로 변화
+ABAP 7.4(NW740)부터 도입된 코딩 패러다임으로 HANA DB의 장점을 최대한 끌어올려 데이터의 집약적인 계산을 Application 계층에서 DB계층으로 위임하게 되었다.
 
+CDS는 이러한 Code Push Down을 위한 하나의 방법이다. <br>
+
+ 
+**As-Is** : DB 서버의 부하를 줄이기 위해 Application Layer에서 작업이 이루어 짐 (Data to Code) <br>
+**To-Be** : Hana DB의 성능을 극대화 하기 위해 DB에서 작업이 이루어지고 최종 결과값만 Application Server로 전송 (Code to Data)
+
+참고: https://lizarmong-water.tistory.com/19
 ![img](https://github.com/jobhope/TechnicalNote/assets/28692938/baf44974-fcad-4449-9be5-688a829ab95b)
 
-참고1: https://lizarmong-water.tistory.com/21
+### Dictinoary view 와 CDS view 차이?
+### Dictionary View (Data to Code)
+티코드 SE11에서 생성한다. Dictionary view는 어플리케이션 서버에 상주하며 데이터베이스에 사전에 정의된 데이터들을 가져온다. SQL문을 사용하여 application이 결과를 처리하는데 필요한 데이터를 DB로 부터 가져온다.<br><br>
+ 
+예를 들어, 모든 제품을 출력하는 ABAP 프로그램이 있다. 이를 위해 해당 프로그램은 DB에서 제품에 필요한 모든 데이터를 가져와야 한다. 이 프로그램은 SQL문을 사용하는 대신 ABAP Dictionary view를 사용한다. Dictionary view는 SQL을 포함하고 있으며, SQL에 의해 데이터베이스의 테이블에서 제품의 데이터를 가져온다.<br><br>
+
+ ABAP Dictionary view는 ABAP 프로그램과 데이터베이스 사이의 추가 계층과 같다. 하나 이상의 테이블을 묶어서 필요한 필드들을 반환한다. INNER JOIN이나 SELCET와 같은 제한된 기본 SQL을 사용한다. 해당 뷰를 사용하는 프로그램 사이에 매개변수가 존재하지 않는다.<br><br>
+ 
+### CDS view (Code to Data)
+CDS view는 로직을 DB 또는 클라이언트 측으로 푸시한다. 어플리케이션 서버 레벨에서 정의 및 위치하며 모든 DB에서 사용 가능하다. Open SQL을 사용하여 INNER JOIN, OUTER JOIN, UNION 등의 기본적인 명령어들을 사용할 수 있다. 매개변수를 프로그램 단에서 주고 받을 수 있으며 주 목적은 View를 만드는 것이다.
 
 
+---
 ## 2. CDS View Syntax
 ### 2-1. Define
 e.g. 주문정보(ZORDERH)와 주문상세(ZORDERI)에 대한 Table 및 CDS view 정의
@@ -52,7 +69,7 @@ define view ZI_OrderHeader as select from ZORDERH
 `@AbapCatalog.sqlViewName`: Database의 View이름 정의<br>
 `@AbapCatalog.compiler.compareFilter`: 일반적으로 컴파일러는 CDS-Path 표현식에 대해 전용 JOIN문을 생성한다. 값이 True이면, 동일한 Filter 조건일 때 연관된 JOIN은 한 번만 생성한다. 그렇지 않을 경우 각각의 Filter 조건에 대해 별도의 JOIN문을 생성<br>
 `@AbapCatalog.preserveKey`: True이면, Key 필드는 명시된 대로 정의. False이면 추가 Key에 관계없이 ABAP DDIC의 클래식 뷰로 결정.<br>
-`@AcessControl.authorizationCheck`: Access를 위한 사용자의 권한 검사 수행<br>
+`@AcessControl.authorizationCheck`: Access를 위한 사용자의 권한 검사 수행
 `@EndUserText.label`: CDS의 Description 정의<br>
 
 **참고: ABAP CDS - ABAP Annotations**
